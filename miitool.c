@@ -64,6 +64,12 @@ static int mdio_write(const char *ifname, uint16_t reg, uint16_t val)
 	uint16_t *data = (uint16_t*)&ifr.ifr_data;
 
 	strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name)-1);
+	ret = ioctl(fd, SIOCGMIIPHY, &ifr);
+	if (ret != 0) {
+		printf("ioctl() failed: %s (%d)\n", strerror(errno), errno);
+		return -1;
+	}
+
 	data[1] = reg;
 	data[2] = val;
 
